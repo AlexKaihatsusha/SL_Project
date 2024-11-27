@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "../ToolBox/PooledActor.h"
+#include "../ObjectPoolPattern/PooledActor.h"
 #include "ActorPool.generated.h"
 
 

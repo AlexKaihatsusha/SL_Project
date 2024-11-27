@@ -2,7 +2,7 @@
 #include "../Actors/SL_HealthGrenade.h"
 #include "../Actors/SL_HealthShard.h"
 #include "Kismet/GameplayStatics.h"
-#include "../ToolBox/ActorPool.h"
+#include "../ToolBox/ObjectPoolPattern/ActorPool.h"
 #include "../SoloLevelingCharacter.h"
 // Sets default values
 ASL_HealthGrenade::ASL_HealthGrenade()
