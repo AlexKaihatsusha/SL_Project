@@ -2,6 +2,18 @@
 
 
 #include "../ActionManager/EventHandler.h"
+#include "Kismet/GameplayStatics.h"
+//register console command for debugging
+static TAutoConsoleVariable<bool> CVarDebugCurrentEvent(
+	TEXT("EventHandler.DebugCurrentEvent"),
+	false,
+	TEXT("displays the current Event - True(show), false(Hide)"),
+	ECVF_Default);
+static TAutoConsoleVariable<bool> CVarDebugEventStack(
+	TEXT("EventHandler.DebugEventStack"),
+	false,
+	TEXT("displays the event stack list - True(show), false(Hide)"),
+	ECVF_Default);
 
 DEFINE_LOG_CATEGORY(UEventHandlerLog)
 
@@ -13,6 +25,7 @@ void UEventHandler::Tick(float DeltaTime)
 {
 	//UE_LOG(UEventHandlerLog, Log, TEXT("Event Handler is running"))
 	UpdateEvents();
+	DrawDebug();
 }
 bool UEventHandler::IsTickable() const
 {
@@ -54,11 +67,11 @@ void UEventHandler::PushEventByClass(TSubclassOf<UGameEventBehaviour> EventClass
 
 		//dynamically create an instance of the class
 		UGameEventBehaviour* NewEvent = NewObject<UGameEventBehaviour>(this, EventClass);
-		if(NewEvent)
+		if (NewEvent)
 		{
 			UE_LOG(UEventHandlerLog, Log, TEXT("Created Event UGameEventBehaviour"));
 
-			//wrap to ScriptInterface
+			//wrap to TScriptInterface
 			TScriptInterface<IEvent> ScriptEvent;
 			ScriptEvent.SetObject(NewEvent);
 			ScriptEvent.SetInterface(Cast<IEvent>(NewEvent));
@@ -82,10 +95,10 @@ void UEventHandler::PushEvent(const TScriptInterface<IEvent>& evt)
 			{
 				return e == evt;
 			});
-		
+
 		//insert event
 		eventStack.Insert(evt, 0);
-		
+
 		//reset current event?
 		if (currentEvent && currentEvent != evt)
 		{
@@ -144,5 +157,39 @@ void UEventHandler::UpdateEvents()
 				currentEvent = nullptr;
 			}
 		}
+	}
+}
+
+void UEventHandler::DrawDebug()
+{
+	if (CVarDebugCurrentEvent->GetBool() )
+	{
+		FVector Offset(0, -25.0f, 100.0f);
+		APawn* ControlledPawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+		FVector StartLocation = ControlledPawn->GetActorLocation() + Offset;
+		if (currentEvent != nullptr)
+		{
+			FString EventNameString = currentEvent.GetObject()->GetName();
+			DrawDebugString(GetWorld(), Offset, "Event: " + EventNameString, ControlledPawn, FColor::Cyan, 0.0f);
+		}
+		else
+		{
+			DrawDebugString(GetWorld(), Offset, "Event: event is nullptr " , ControlledPawn, FColor::Red, 0.0f);
+		}
+	}
+	if (CVarDebugEventStack->GetBool())
+	{
+		FVector Offset(0, -25.0f, 110.0f);
+		APawn* ControlledPawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+		FVector StartLocation = ControlledPawn->GetActorLocation() + Offset;
+		for (auto evt : eventStack)
+		{
+			if (evt != currentEvent && currentEvent)
+			{
+				FString EventNameString = evt.GetObject()->GetName();
+				DrawDebugString(GetWorld(), Offset, "Event: " + EventNameString, ControlledPawn, FColor::Cyan, 0.0f);	
+			}
+		}
+		
 	}
 }
