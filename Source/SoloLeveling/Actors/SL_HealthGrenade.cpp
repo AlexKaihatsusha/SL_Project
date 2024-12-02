@@ -40,12 +40,12 @@ void ASL_HealthGrenade::Tick(float DeltaTime)
 
 }
 
-void ASL_HealthGrenade::UseGrenage()
+void ASL_HealthGrenade::UseGrenage(FVector Direction)
 {
-	FVector Direction = GetActorForwardVector()*1000.f;
-	Mesh->AddImpulse(Direction, NAME_None, true);
-	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation()+Direction, FColor::Blue, false, 4.f, 0,2.0f);
-	
+	FVector Impulse = Direction * ImpulseStrength;
+	Mesh->AddImpulse(Impulse, NAME_None, true);
+
+	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + Direction * 50.f, FColor::Blue, false, 4.f, 0, 1.0f);
 }
 
 void ASL_HealthGrenade::ActivateGrenade()

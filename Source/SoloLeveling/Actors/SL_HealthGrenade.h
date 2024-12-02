@@ -27,7 +27,7 @@ protected:
 public:	
 	
 	virtual void Tick(float DeltaTime) override;
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* Mesh = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Health Shard")
@@ -49,10 +49,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Health Shard", meta=(ClampMin = "0"))
 	float ActivationDelay = 2.f;
 	UFUNCTION(BlueprintCallable, Category= "Health Grenade")
-	void UseGrenage();
+	void UseGrenage(FVector StartLocation);
 private:
 	UFUNCTION()
 	void ActivateGrenade();
+	
+	UPROPERTY(EditDefaultsOnly)
+	float ImpulseStrength = 1000.f;
 
 	FTimerHandle ActivationHandle;
 };
