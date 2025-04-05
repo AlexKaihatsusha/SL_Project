@@ -5,7 +5,7 @@
 #include "../Public/UObject/Object.h"
 #include "../Public/Tickable.h"
 #include "../ActionManager/Event.h"
-#include "../ActionManager/GameEventBehaviour.h"
+#include "SoloLeveling/Events/SL_GameEventBehaviour.h"
 #include "EventHandler.generated.h"
 
 
@@ -28,21 +28,21 @@ public:
 	UWorld* GetWorld() const override;
 	//---------------------------------------------------------
 	//EventHandler logic is below
-	UFUNCTION(BlueprintCallable, Category = "Evenet Handler")
+	UFUNCTION(BlueprintCallable, Category = "Event Handler")
 	//To enable or disable tick for Event Handler
 	void SetActive(bool bIsActive);
 	//getter
-	UFUNCTION(BlueprintCallable, Category = "Evenet Handler")
+	UFUNCTION(BlueprintCallable, Category = "Event Handler")
 	bool IsActive() const;
 
 
 	//To push through Blueprint, since only GameEventBehaviour can be blueprintable and used there 
 	UFUNCTION(BlueprintCallable, Category = "Event Handler")
-	void PushEventByClass(TSubclassOf<UGameEventBehaviour> EventClass);
+	void PushEventByClass(TSubclassOf<USL_GameEventBehaviour> EventClass);
 	
-	void PushEvent(const TScriptInterface<IEvent>& evt);
+	
 private:
-
+	void PushEvent(const TScriptInterface<IEvent>& evt);
 	//variables
 	bool bActive = false;
 	//TScriptInterface is a template that wraps two key components:

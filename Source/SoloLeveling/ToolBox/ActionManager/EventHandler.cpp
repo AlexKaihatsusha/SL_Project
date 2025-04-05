@@ -3,6 +3,7 @@
 
 #include "../ActionManager/EventHandler.h"
 #include "Kismet/GameplayStatics.h"
+
 //register console command for debugging
 static TAutoConsoleVariable<bool> CVarDebugCurrentEvent(
 	TEXT("EventHandler.DebugCurrentEvent"),
@@ -59,18 +60,19 @@ bool UEventHandler::IsActive() const
 	return bActive;
 }
 
-void UEventHandler::PushEventByClass(TSubclassOf<UGameEventBehaviour> EventClass)
+void UEventHandler::PushEventByClass(TSubclassOf<USL_GameEventBehaviour> EventClass)
 {
 	if (EventClass)
 	{
 		UE_LOG(UEventHandlerLog, Log, TEXT("PushEventByClass call, with value"));
 
 		//dynamically create an instance of the class
-		UGameEventBehaviour* NewEvent = NewObject<UGameEventBehaviour>(this, EventClass);
+		USL_GameEventBehaviour* NewEvent = NewObject<USL_GameEventBehaviour>(this, EventClass);
 		if (NewEvent)
 		{
 			UE_LOG(UEventHandlerLog, Log, TEXT("Created Event UGameEventBehaviour"));
-
+			//Set current world for the event
+			NewEvent->SetCurrentWorld(GetWorld());
 			//wrap to TScriptInterface
 			TScriptInterface<IEvent> ScriptEvent;
 			ScriptEvent.SetObject(NewEvent);
