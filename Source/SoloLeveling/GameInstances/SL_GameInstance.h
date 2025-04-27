@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include <SoloLeveling/ToolBox/ActionManager/EventHandler.h>
+#include <SoloLeveling/ToolBox/ActionManager/EventHandlerSubsystem.h>
 #include "SL_GameInstance.generated.h"
 
 /**
@@ -17,8 +17,8 @@ class SOLOLEVELING_API USL_GameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadWrite, Category = "Events")
-	UEventHandler* EventHandler = nullptr;
+	//UPROPERTY(BlueprintReadWrite, Category = "Events")
+	//UEventHandler* EventHandler = nullptr;
 
 	virtual void Init() override;
 	virtual void Shutdown() override;

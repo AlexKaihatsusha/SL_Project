@@ -26,7 +26,7 @@ void ASL_HealthGrenade::BeginPlay()
 void ASL_HealthGrenade::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if(OtherActor && OtherActor->ActorHasTag("Ground"))
+	if(OtherActor)
 	{
 		//DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 20.f, 12, FColor::Magenta,false, 2.f);
 		GetWorldTimerManager().SetTimer(ActivationHandle, this, &ASL_HealthGrenade::ActivateGrenade, ActivationDelay, false);
@@ -73,8 +73,9 @@ void ASL_HealthGrenade::ActivateGrenade()
 			float RandomSpeed = FMath::RandRange(MinSpeed, MaxSpeed);
 			SpawnedShard->SetHealthAmount(RandomHealth);
 			SpawnedShard->SetVelocity(RandomSpeed);
-
+			//any direction within unit Sphere
 			FVector RandomDirection = FMath::VRand();
+			//only positive Z Axis
 			RandomDirection.Z = FMath::Abs(RandomDirection.Z);
 			FVector Impulse = RandomDirection*RandomSpeed;
 			SpawnedShard->Mesh->AddImpulse(Impulse, NAME_None, true);
