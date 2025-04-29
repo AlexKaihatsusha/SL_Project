@@ -1,6 +1,6 @@
 ﻿
 #include "SL_HealthShard.h"
-#include "../Components/SL_HealthComponent.h"
+#include "../ToolBox/DamageSystem/Damageable.h"
 DEFINE_LOG_CATEGORY(SL_HealthShard)
 ASL_HealthShard::ASL_HealthShard() : Super::ASL_Shard()
 {
@@ -27,11 +27,10 @@ void ASL_HealthShard::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 {
 	if (OtherActor && OtherActor != this && OtherComp)
 	{
-		USL_HealthComponent* HealthComponent = OtherActor->FindComponentByClass<USL_HealthComponent>();
-		if (HealthComponent)
+		if (OtherActor->Implements<UDamageable>())
 		{
 			UE_LOG(SL_HealthShard, Log, TEXT("Shard overlap with %s "), *OtherActor->GetName());
-			HealthComponent->AddHealth(HealthAmount);
+			IDamageable::Execute_Heal(OtherActor, HealthAmount);
 			ReturnToPool();
 		}
 	}

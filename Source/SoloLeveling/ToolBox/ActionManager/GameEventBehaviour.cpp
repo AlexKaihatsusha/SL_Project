@@ -12,11 +12,13 @@ UGameEventBehaviour::UGameEventBehaviour()
 
 UWorld* UGameEventBehaviour::GetWorld() const
 {
+	//I added a simple return right away. Fixed warning that can't find worldContext of Event
 	if (WorldRef)
 	{
 		return WorldRef;
 	}
-	//Return null if the called from the CDO, or if the outer is being destroyed
+	//Return null if the called from the CDO, or if the outer is being destroyed: 
+	// https://forums.unrealengine.com/t/access-to-uworld-or-aactor-specific-bp-nodes-from-blueprints-of-other-types-component-object/151379
 	if (!HasAnyFlags(RF_ClassDefaultObject) && !GetOuter()->HasAnyFlags(RF_BeginDestroyed) && !GetOuter()->IsUnreachable())
 	{
 		//Try to get the world from the owning actor if we have one
