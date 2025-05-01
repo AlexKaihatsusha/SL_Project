@@ -3,8 +3,10 @@
 #include "CoreMinimal.h"
 #include "SL_Shard.h"
 #include "SL_HealthShard.generated.h"
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShardUse);
+
 DECLARE_LOG_CATEGORY_EXTERN(SL_HealthShard, Log, All)
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class ASL_HealthShard : public ASL_Shard
 {
 	GENERATED_BODY()
@@ -15,6 +17,8 @@ public:
 	void SetHealthAmount(float Value);
 	UFUNCTION(BlueprintCallable, Category= "Health Shard")
 	float GetHealthAmount();
+	UPROPERTY(BlueprintAssignable, Category = "Health Shard")
+	FOnShardUse OnShardUse;
 protected:
 	UFUNCTION()
 	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit );

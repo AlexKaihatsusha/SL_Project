@@ -2,6 +2,7 @@
 
 
 #include "../ActionManager/EventHandlerSubsystem.h"
+#include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(UEventHandlerLog)
@@ -185,30 +186,36 @@ void UEventHandlerSubsystem::DrawDebug()
 	if (CVarDebugCurrentEvent->GetBool())
 	{
 		FVector Offset(0, -25.0f, 100.0f);
-		APawn* ControlledPawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-		FVector StartLocation = ControlledPawn->GetActorLocation() + Offset;
+		APlayerController* Controller = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		if(Controller){
+		FVector StartLocation = Controller->GetPawn()->GetActorLocation() + Offset;
 		if (currentEvent != nullptr)
 		{
 			FString EventNameString = currentEvent.GetObject()->GetName();
-			DrawDebugString(GetWorld(), Offset, "Event: " + EventNameString, ControlledPawn, FColor::Cyan, 0.0f);
+			DrawDebugString(GetWorld(), Offset, "Event: " + EventNameString, Controller->GetParentActor(), FColor::Cyan, 0.0f);
 		}
 		else
 		{
-			DrawDebugString(GetWorld(), Offset, "Event: event is nullptr ", ControlledPawn, FColor::Red, 0.0f);
+			DrawDebugString(GetWorld(), Offset, "Event: event is nullptr ", Controller->GetParentActor(), FColor::Red, 0.0f);
+		}
 		}
 	}
 	if (CVarDebugEventStack->GetBool())
 	{
 		FVector Offset(0, -25.0f, 110.0f);
 		APawn* ControlledPawn = Cast<APawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-		FVector StartLocation = ControlledPawn ? ControlledPawn->GetActorLocation() + Offset : FVector::ZeroVector;
+
+		if(ControlledPawn)
+		{
+		FVector StartLocation =  ControlledPawn->GetActorLocation() + Offset;
 		for (auto evt : eventInterfaceStack)
 		{
-			if (evt != currentEvent && currentEvent)
+			if (evt != currentEvent && currentEvent && evt)
 			{
 				FString EventNameString = evt.GetObject()->GetName();
 				DrawDebugString(GetWorld(), Offset, "Event: " + EventNameString, ControlledPawn, FColor::Cyan, 0.0f);
 			}
+		}
 		}
 
 	}

@@ -65,6 +65,7 @@ void ASL_HealthGrenade::ActivateGrenade()
 			(
 			ActorPoolRef->SpawnActorFromPool(FTransform(FRotator::ZeroRotator, Origin, FVector(0.1f,0.1f, 0.1f)))
 			);
+		SpawnedShard->OnShardUse.Broadcast();
 		if(SpawnedShard)
 		{
 			//UE_LOG(LogTemp, Warning, TEXT("shard is spawned "));
