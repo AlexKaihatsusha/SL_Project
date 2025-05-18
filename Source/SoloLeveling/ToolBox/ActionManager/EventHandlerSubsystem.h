@@ -4,8 +4,8 @@
 
 #include "../Public/UObject/Object.h"
 #include "../Public/Tickable.h"
-#include "../ActionManager/Event.h"
-#include "SoloLeveling/Events/SL_GameEventBehaviour.h"
+#include "../ActionManager/Events/Base/Event.h"
+#include "../ActionManager/Events/GameEvent.h"
 #include "EventHandlerSubsystem.generated.h"
 
 
@@ -33,24 +33,37 @@ public:
 
 	//To push through Blueprint, since only GameEventBehaviour can be blueprintable and used there 
 	UFUNCTION(BlueprintCallable, Category = "Event Handler")
-	void PushEventByClass(TSubclassOf<USL_GameEventBehaviour> EventClass);
-	
+	void PushEventByClass(TSubclassOf<UGameEvent> EventClass);
+	UFUNCTION(BlueprintCallable, Category = "Event Handler")
+	void PushParallelEventByClass(TSubclassOf<UGameEvent> EventClass);
 	
 private:
 	void PushEvent(const TScriptInterface<IEvent>& evt);
+	void PushParallelEvent(const TScriptInterface<IEvent>& evt);
 	//variables
 	
 	//TScriptInterface is a template that wraps two key components:
 	//A UObject* pointer to the object that implements the interface.
 	//A pointer to the actual interface(IEvent*).
+	//main events
 	UPROPERTY()
-	TArray<TScriptInterface<IEvent>>		eventInterfaceStack;
+	TArray<TScriptInterface<IEvent>>		mainEventsInterfaceStack;
 	UPROPERTY()
-	TSet<UObject*>			startedEvents;
+	TSet<UObject*>							startedEvents;
 	UPROPERTY()
 	TScriptInterface<IEvent>				currentEvent{nullptr};
+
+
+
+	//parallel events
+	UPROPERTY()
+	TArray<TScriptInterface<IEvent>>				parallelEvents{ nullptr };
+	UPROPERTY()
+	TSet<UObject*>									startedParallelEvents;
+	
 	//functions
 	void UpdateEvents();
+	void UpdateParallelEvents();
 
 
 	//debug functions

@@ -4,6 +4,7 @@
 #include "../ActionManager/EventHandlerSubsystem.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "../../../../../../../GameEngines/UnrealEngine/UE_5.5/Engine/Plugins/Editor/WaveformEditor/Source/WaveformEditorWidgets/Public/WaveformEditorStyle.h"
 
 DEFINE_LOG_CATEGORY(UEventHandlerLog)
 
@@ -28,7 +29,13 @@ UEventHandlerSubsystem::UEventHandlerSubsystem()
 void UEventHandlerSubsystem::Tick(float DeltaTime)
 {
 	//UE_LOG(UEventHandlerLog, Log, TEXT("Event Handler is running"))
+
+
+	//update main events
 	UpdateEvents();
+	//update parallel events
+	UpdateParallelEvents();
+	//Draw debug data
 	DrawDebug();
 }
 void UEventHandlerSubsystem::Deinitialize()
@@ -54,16 +61,16 @@ TStatId UEventHandlerSubsystem::GetStatId() const
 }
 
 
-void UEventHandlerSubsystem::PushEventByClass(TSubclassOf<USL_GameEventBehaviour> EventClass)
+void UEventHandlerSubsystem::PushEventByClass(TSubclassOf<UGameEvent> EventClass)
 {
 	if (!GetWorld())
 		return;
 	if (EventClass)
 	{
-		UE_LOG(UEventHandlerLog, Log, TEXT("PushEventByClass call for class %s"), *EventClass->GetName());
 
-		USL_GameEventBehaviour* NewEvent = NewObject<USL_GameEventBehaviour>(this, EventClass);
-		
+		UGameEvent* NewEvent = NewObject<UGameEvent>(this, EventClass);
+		UE_LOG(UEventHandlerLog, Log, TEXT("PushEventByClass call for event %s, Main event: %s "), *EventClass->GetName(), NewEvent->bIsMainEvent ? TEXT("true") : TEXT("false"));
+
 		if (NewEvent)
 		{
 			UE_LOG(UEventHandlerLog, Log, TEXT("NewEvent as new object is created"));
@@ -76,7 +83,15 @@ void UEventHandlerSubsystem::PushEventByClass(TSubclassOf<USL_GameEventBehaviour
 			event.SetInterface(Cast<IEvent>(NewEvent));
 			UE_LOG(UEventHandlerLog, Log, TEXT("Created a wrapper for new event"));
 			//push event to the class
-			PushEvent(event);
+			if (NewEvent->bIsMainEvent)
+			{
+				PushEvent(event);
+			}
+			else
+			{
+				PushParallelEvent(event);
+			}
+			
 			UE_LOG(UEventHandlerLog, Log, TEXT("PushEvent called"));
 		}
 		else
@@ -90,6 +105,43 @@ void UEventHandlerSubsystem::PushEventByClass(TSubclassOf<USL_GameEventBehaviour
 	}
 }
 
+void UEventHandlerSubsystem::PushParallelEventByClass(TSubclassOf<UGameEvent> EventClass)
+{
+	if (!GetWorld())
+		return;
+	if (EventClass)
+	{
+		UE_LOG(UEventHandlerLog, Log, TEXT("PushParallelEventByClass call for class %s"), *EventClass->GetName());
+		UGameEvent* NewEvent = NewObject<UGameEvent>(this, EventClass);
+
+		if (NewEvent && !NewEvent->bIsMainEvent)
+		{
+			UE_LOG(UEventHandlerLog, Log, TEXT("new parallel event as new object is created"));
+			//init world ref for event
+			NewEvent->Init(GetWorld());
+
+			//wrap interface and GameEventBehaviour Object
+			TScriptInterface<IEvent> event;
+			event.SetObject(NewEvent);
+			event.SetInterface(Cast<IEvent>(NewEvent));
+			UE_LOG(UEventHandlerLog, Log, TEXT("Created a wrapper for new parallel event"));
+			//push event to the class
+			PushParallelEvent(event);
+			UE_LOG(UEventHandlerLog, Log, TEXT("PushParallelEvent called"));
+		}
+		else
+		{
+			UE_LOG(UEventHandlerLog, Error, TEXT("Failed to create event of class"));
+		}
+	}
+	else
+	{
+		UE_LOG(UEventHandlerLog, Error, TEXT("PushParallelEventByClass failed"));
+	}
+}
+
+
+
 void UEventHandlerSubsystem::PushEvent(const TScriptInterface<IEvent>& evt)
 {
 	//early return of event is nullptr
@@ -98,14 +150,14 @@ void UEventHandlerSubsystem::PushEvent(const TScriptInterface<IEvent>& evt)
 		return;
 	}
 	//already on Stack?
-	if (eventInterfaceStack.Contains(evt))
+	if (mainEventsInterfaceStack.Contains(evt))
 	{	
-		UE_LOG(UEventHandlerLog, Warning, TEXT("%s - Trying to push event that is already on stack - return from PushEvent function"), *evt.GetObject()->GetName());
+		UE_LOG(UEventHandlerLog, Warning, TEXT("%s - Trying to push event that is already on stack"), *evt.GetObject()->GetName());
 		return;
 	}
 
 	//insert event
-	eventInterfaceStack.Insert(evt, 0);
+	mainEventsInterfaceStack.Insert(evt, 0);
 
 	//reset current event?
 	if (currentEvent && currentEvent != evt)
@@ -116,10 +168,27 @@ void UEventHandlerSubsystem::PushEvent(const TScriptInterface<IEvent>& evt)
 
 }
 
+void UEventHandlerSubsystem::PushParallelEvent(const TScriptInterface<IEvent>& evt)
+{
+	if (!evt)
+	{
+		return;
+	}
+	if (parallelEvents.Contains(evt))
+	{
+		UE_LOG(UEventHandlerLog, Warning, TEXT("%s - Trying to push parallel event that is already on stack"), *evt.GetObject()->GetName());
+		return;
+	}
+
+	parallelEvents.Add(evt);
+	//I want to start this event immediately
+	evt->Execute_OnBegin(evt.GetObject(), true);
+}
+
 void UEventHandlerSubsystem::UpdateEvents()
 {
 	//is there any events on stack
-	if (eventInterfaceStack.Num() == 0)
+	if (mainEventsInterfaceStack.Num() == 0)
 	{
 		return;
 	}
@@ -128,7 +197,7 @@ void UEventHandlerSubsystem::UpdateEvents()
 	if (!currentEvent)
 	{
 		//set current event
-		currentEvent = eventInterfaceStack[0];
+		currentEvent = mainEventsInterfaceStack[0];
 		if (!currentEvent)
 		{
 			UE_LOG(UEventHandlerLog, Error, TEXT("Failed to set currentEvent. Invalid event in stack."));
@@ -142,9 +211,9 @@ void UEventHandlerSubsystem::UpdateEvents()
 		//current event debug
 		UE_LOG(UEventHandlerLog, Log, TEXT("Set new event"));
 		FString currentEventText = [&]() -> FString{
-				USL_GameEventBehaviour* tempRef = Cast<USL_GameEventBehaviour>(currentEvent.GetObject());
+				UGameEvent* tempRef = Cast<UGameEvent>(currentEvent.GetObject());
 				if(tempRef)
-					return tempRef->text;
+					return tempRef->DebugText;
 				return "None";
 			}();
 			
@@ -152,9 +221,9 @@ void UEventHandlerSubsystem::UpdateEvents()
 
 
 		//did something affect the stack in the OnBegin()?
-		if (!eventInterfaceStack.IsEmpty())
+		if (!mainEventsInterfaceStack.IsEmpty())
 		{
-			if (eventInterfaceStack.Num() > 0 && currentEvent != eventInterfaceStack[0])
+			if (mainEventsInterfaceStack.Num() > 0 && currentEvent != mainEventsInterfaceStack[0])
 			{
 				UE_LOG(UEventHandlerLog, Log, TEXT("Set new event"));
 
@@ -167,16 +236,47 @@ void UEventHandlerSubsystem::UpdateEvents()
 	if (currentEvent)
 	{
 		currentEvent->Execute_OnUpdate(currentEvent.GetObject());
-		if (eventInterfaceStack.Num() > 0 && currentEvent == eventInterfaceStack[0])
+		if (mainEventsInterfaceStack.Num() > 0 && currentEvent == mainEventsInterfaceStack[0])
 		{
 			if (currentEvent->Execute_IsDone(currentEvent.GetObject()))
 			{
 				UE_LOG(UEventHandlerLog, Log, TEXT("Event is done"));
-				eventInterfaceStack.RemoveAt(0);
+				mainEventsInterfaceStack.RemoveAt(0);
 				currentEvent->Execute_OnEnd(currentEvent.GetObject());
 				startedEvents.Remove(currentEvent.GetObject());
 				currentEvent = nullptr;
 			}
+		}
+	}
+}
+
+void UEventHandlerSubsystem::UpdateParallelEvents()
+{
+	//Early return if there is no events
+	if (parallelEvents.IsEmpty())
+	{
+		return;
+	}
+	//just update all parallel events, in reverse loop to avoid index shift or crash
+	for (int32 e = parallelEvents.Num()-1; e>=0; --e)
+	{
+		
+		const auto& evt = parallelEvents[e];
+		//Event is nullptr?
+		if (!evt)
+		{
+			parallelEvents.RemoveAt(e);
+			continue;
+		}
+
+		evt->Execute_OnUpdate(evt.GetObject());
+
+		if (evt->Execute_IsDone(evt.GetObject()))
+		{
+			//call on End
+			evt->Execute_OnEnd(evt.GetObject());
+			//Remove it from the array
+			parallelEvents.RemoveAt(e);
 		}
 	}
 }
@@ -208,7 +308,7 @@ void UEventHandlerSubsystem::DrawDebug()
 		if(ControlledPawn)
 		{
 		FVector StartLocation =  ControlledPawn->GetActorLocation() + Offset;
-		for (auto evt : eventInterfaceStack)
+		for (auto evt : mainEventsInterfaceStack)
 		{
 			if (evt != currentEvent && currentEvent && evt)
 			{

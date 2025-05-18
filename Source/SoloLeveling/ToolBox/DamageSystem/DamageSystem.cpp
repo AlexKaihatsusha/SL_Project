@@ -12,7 +12,7 @@ void UDamageSystem::BeginPlay()
 	Super::BeginPlay();
 
 }
-float UDamageSystem::Heal(float HealAmount)
+float UDamageSystem::Heal_Implementation(float HealAmount)
 {
 	if (IsDead)
 		return CurrentHealth;
@@ -26,50 +26,53 @@ float UDamageSystem::Heal(float HealAmount)
 	return CurrentHealth;
 }
 
-bool UDamageSystem::TakeDamage(FDamageData DamageData)
+bool UDamageSystem::TakeDamage_Implementation(FDamageData DamageData)
 {
-	DamageReceived = false;
-	//return if owner is dead;
-	if (IsDead)
-		return DamageReceived;
-	//take damage
-	CurrentHealth = FMath::Clamp(CurrentHealth - DamageData.Amount, 0.0f, MaxHealth);
-	DamageReceived = true;
-	//if after taking damage owner is dead, then call delegate
-	if (IsOwnerDead())
-		OnDeath.Broadcast();
-
-
+	//----DEBUG-----
 	UScriptStruct* DataToText = DamageData.StaticStruct();
 	FString tempString = TEXT("");
-	DataToText->ExportText(tempString, &DamageData, nullptr, this, (PPF_ExportsNotFullyQualified | PPF_Copy | PPF_Delimited | PPF_IncludeTransient), nullptr);
-	UE_LOG(UDamageSystemLog, Log, TEXT("[Receiver: %s;\tDamageData: %s;\tCurrentHealth: %f;\tDeath: %s;]"),*GetOwner()->GetName(), *FString(tempString), CurrentHealth, IsDead ? TEXT("true") : TEXT("false"));
+	DataToText->ExportText(tempString, &DamageData, nullptr, this,
+		(PPF_ExportsNotFullyQualified | PPF_Copy | PPF_Delimited | PPF_IncludeTransient), nullptr);
+	UE_LOG(UDamageSystemLog, Log, TEXT("[Receiver: %s;\tDamageData: %s;\tCurrentHealth: %f;\tDeath: %s;]"),
+		*GetOwner()->GetName(), *FString(tempString), CurrentHealth, IsDead ? TEXT("true") : TEXT("false"));
 	
-	return DamageReceived;
+	return IsDamageReceived;
 }
 
-float UDamageSystem::GetMaxHealth()
+float UDamageSystem::GetMaxHealth_Implementation()
 {
 	return MaxHealth;
 }
 
-float UDamageSystem::GetCurrentHealth()
+float UDamageSystem::GetCurrentHealth_Implementation()
 {
 	return CurrentHealth;
 }
-bool UDamageSystem::IsOwnerDead()
+bool UDamageSystem::IsOwnerDead() const
 {
 	if (CurrentHealth <= 0.f)
 	{
-		SetIsDead(true);
-		return IsDead;
+		return true;
 	}
 	else if (CurrentHealth >= 0.f)
 	{
-		SetIsDead(false);
 		return false;
 	}
 	return false;
+}
+
+void UDamageSystem::ApplyDamage(float DamageAmount)
+{
+	//take damage
+	CurrentHealth = FMath::Clamp(CurrentHealth - DamageAmount, 0.0f, MaxHealth);
+	OnDamageReceived.Broadcast(CurrentHealth);
+	//---------------
+	if (IsOwnerDead())
+	{
+		IsDead = true;
+		OnDeath.Broadcast();
+	}
+	
 }
 
 void UDamageSystem::SetIsDead(bool Dead)
