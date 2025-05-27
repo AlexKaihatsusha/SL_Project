@@ -6,19 +6,19 @@
 USTRUCT(BlueprintType)
 struct FKillData
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KillData")
+	AActor* Killer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KillData")
+	int32 AmountOfDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KillData")
+	bool bHeadshot;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KillData")
-    AActor* Killer;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KillData")
-    int32 AmountOfDamage;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KillData")
-    bool bHeadshot;
-
-    // Default constructor
-    FKillData() :Killer(nullptr), bHeadshot(false)
-    {
-    }
+	// Default constructor
+	FKillData()
+		: Killer(nullptr), bHeadshot(false)
+	{
+	}
 };

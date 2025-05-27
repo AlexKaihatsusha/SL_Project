@@ -11,7 +11,7 @@ class SOLOLEVELING_API ASL_PlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	ASL_PlayerController();
-	//for health bar 
+	// for health bar
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "Delegates")
 	FOnHealthChanged OnHealthChanged;
 };

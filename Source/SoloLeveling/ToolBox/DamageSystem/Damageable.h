@@ -25,5 +25,4 @@ public:
 	float GetMaxHealth();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DamageSystem|Functions|Interface")
 	float GetCurrentHealth();
-
 };

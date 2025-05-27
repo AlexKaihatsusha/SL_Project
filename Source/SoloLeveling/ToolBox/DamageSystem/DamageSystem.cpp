@@ -10,13 +10,12 @@ UDamageSystem::UDamageSystem()
 void UDamageSystem::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 float UDamageSystem::Heal_Implementation(float HealAmount)
 {
 	if (IsDead)
 		return CurrentHealth;
-	//add health
+	// add health
 	CurrentHealth = FMath::Clamp(CurrentHealth + HealAmount, 0.f, MaxHealth);
 
 	if (CurrentHealth <= 0.f)
@@ -30,12 +29,12 @@ bool UDamageSystem::TakeDamage_Implementation(FDamageData DamageData)
 {
 	//----DEBUG-----
 	UScriptStruct* DataToText = DamageData.StaticStruct();
-	FString tempString = TEXT("");
+	FString		   tempString = TEXT("");
 	DataToText->ExportText(tempString, &DamageData, nullptr, this,
 		(PPF_ExportsNotFullyQualified | PPF_Copy | PPF_Delimited | PPF_IncludeTransient), nullptr);
 	UE_LOG(UDamageSystemLog, Log, TEXT("[Receiver: %s;\tDamageData: %s;\tCurrentHealth: %f;\tDeath: %s;]"),
 		*GetOwner()->GetName(), *FString(tempString), CurrentHealth, IsDead ? TEXT("true") : TEXT("false"));
-	
+
 	return IsDamageReceived;
 }
 
@@ -63,7 +62,7 @@ bool UDamageSystem::IsOwnerDead() const
 
 void UDamageSystem::ApplyDamage(float DamageAmount)
 {
-	//take damage
+	// take damage
 	CurrentHealth = FMath::Clamp(CurrentHealth - DamageAmount, 0.0f, MaxHealth);
 	OnDamageReceived.Broadcast(CurrentHealth);
 	//---------------
@@ -72,13 +71,9 @@ void UDamageSystem::ApplyDamage(float DamageAmount)
 		IsDead = true;
 		OnDeath.Broadcast();
 	}
-	
 }
 
 void UDamageSystem::SetIsDead(bool Dead)
 {
 	IsDead = Dead;
 }
-
-
-

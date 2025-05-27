@@ -14,16 +14,17 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* Mesh = nullptr;
 
-	//Getters
-	UFUNCTION(BlueprintCallable, Category="Shard")
+	// Getters
+	UFUNCTION(BlueprintCallable, Category = "Shard")
 	float GeVelocity();
-	UFUNCTION(BlueprintCallable, Category="Shard")
-	void SetVelocity(float Value);
+	UFUNCTION(BlueprintCallable, Category = "Shard")
+	void		 SetVelocity(float Value);
 	virtual void OnSetInUse() override;
+
 protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
-	
+
 private:
 	float Velocity = 0.f;
 };

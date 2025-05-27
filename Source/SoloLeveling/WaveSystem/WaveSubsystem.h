@@ -14,10 +14,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWaveFinished);
 DECLARE_LOG_CATEGORY_EXTERN(UWaveSubsystemLog, Log, All)
 
 UCLASS(Blueprintable, BlueprintType)
-class  UWaveSubsystem : public UGameInstanceSubsystem
+class UWaveSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
-	//base
+	// base
 public:
 	UWaveSubsystem();
 
@@ -28,20 +28,17 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Wave Subsystem | Delegates")
 	FOnWaveFinished OnWaveFinished;
 
-
 	UFUNCTION(BlueprintCallable)
 	void StartNewWave(FWaveData NewWaveData);
 
 	UFUNCTION(BlueprintPure)
 	bool GetIsCurrentWaveInProgress() { return bWaveInProgress; }
-	
+
 	FWaveData GetCurrentWaveData() { return currentWave; }
 
 private:
-
 	FTimerHandle WaveTimer;
 	FTimerHandle SpawnTimer;
-
 
 	UPROPERTY(VisibleAnywhere, Category = "Wave System")
 	FWaveData currentWave;

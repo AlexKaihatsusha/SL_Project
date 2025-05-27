@@ -6,20 +6,19 @@
 USTRUCT(BlueprintType)
 struct FPlayerStats
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-    int32 Strength;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-    int32 Agility;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-    int32 Intelligence;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int32 Strength;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int32 Agility;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int32 Intelligence;
 
-
-    // Default constructor
-    FPlayerStats()
-        : Strength(1), Agility(1), Intelligence(1)
-    {
-    }
+	// Default constructor
+	FPlayerStats()
+		: Strength(1), Agility(1), Intelligence(1)
+	{
+	}
 };

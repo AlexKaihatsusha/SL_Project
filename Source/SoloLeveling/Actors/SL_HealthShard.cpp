@@ -2,7 +2,8 @@
 #include "SL_HealthShard.h"
 #include "../ToolBox/DamageSystem/Damageable.h"
 DEFINE_LOG_CATEGORY(SL_HealthShard)
-ASL_HealthShard::ASL_HealthShard() : Super::ASL_Shard()
+ASL_HealthShard::ASL_HealthShard()
+	: Super::ASL_Shard()
 {
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &ASL_HealthShard::OnComponentBeginOverlap);
 }
@@ -18,9 +19,9 @@ float ASL_HealthShard::GetHealthAmount()
 }
 
 void ASL_HealthShard::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-                                     UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	//nothing for now
+	// nothing for now
 }
 
 void ASL_HealthShard::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -34,6 +35,4 @@ void ASL_HealthShard::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 			ReturnToPool();
 		}
 	}
-
 }
-

@@ -9,23 +9,20 @@
 USTRUCT(BlueprintType)
 struct FPlayerData
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-   
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-    FPlayerLevel PlayerLevel;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
+	FPlayerLevel PlayerLevel;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-    FPlayerStats PlayerStats;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
+	FPlayerStats PlayerStats;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
-    FGameData PlayerProgressData;
-    
-    // Default constructor
-    FPlayerData()
-    {
-    }
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerData")
+	FGameData PlayerProgressData;
+
+	// Default constructor
+	FPlayerData()
+	{
+	}
 };
-
-

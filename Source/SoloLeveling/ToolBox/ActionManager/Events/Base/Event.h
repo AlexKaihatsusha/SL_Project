@@ -24,5 +24,4 @@ public:
 	void OnEnd();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "IEvent")
 	bool IsDone();
-
 };

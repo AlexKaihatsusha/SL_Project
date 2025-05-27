@@ -10,14 +10,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBlocked, bool, CanBeParried);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageResponse, EResponseDamageType, ResponseDamageType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageReceived, float, currentHealth);
 
-
-
-
 DECLARE_LOG_CATEGORY_EXTERN(UDamageSystemLog, Log, All)
 
 UCLASS(BlueprintType, Blueprintable, meta = (BlueprintSpawnableComponent))
 /* Actual Interface declaration. */
-class UDamageSystem: public UActorComponent
+class UDamageSystem : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -26,7 +23,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DamageSystem|Functions")
 	float Heal(float HealAmount);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DamageSystem|Functions")
-	bool  TakeDamage(FDamageData DamageData);
+	bool TakeDamage(FDamageData DamageData);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DamageSystem|Functions")
 	float GetMaxHealth();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "DamageSystem|Functions")
@@ -37,15 +34,15 @@ public:
 	UFUNCTION(BlueprintPure, Category = "DamageSystem|Functions")
 	bool IsOwnerDead() const;
 
-	//Getters
+	// Getters
 	UFUNCTION(BlueprintPure, Category = "DamageSystem|Functions|Getters")
-	bool GetIsDead() const { return IsDead;}
+	bool GetIsDead() const { return IsDead; }
 
-	//Setters
+	// Setters
 	UFUNCTION(BlueprintCallable, Category = "DamageSystem|Functions|Setters")
 	void SetIsDead(bool Dead);
 
-	//Delegates
+	// Delegates
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "DamageSystem|Delegates")
 	FOnDeath OnDeath;
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "DamageSystem|Delegates")
@@ -69,12 +66,11 @@ protected:
 	bool IsDead = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DamageSystem|Variables|")
 	bool IsDamageReceived = false;
-	//bool IsOwnerDead() const;
+	// bool IsOwnerDead() const;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DamageSystem|Variables|Health")
 	float MaxHealth = 100.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DamageSystem|Variables|Health")
 	float CurrentHealth = 0.f;
-	
+
 private:
-	
 };

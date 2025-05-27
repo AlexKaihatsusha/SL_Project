@@ -13,18 +13,20 @@ class ASL_HealthShard : public ASL_Shard
 public:
 	ASL_HealthShard();
 
-	UFUNCTION(BlueprintCallable, Category= "Health Shard")
+	UFUNCTION(BlueprintCallable, Category = "Health Shard")
 	void SetHealthAmount(float Value);
-	UFUNCTION(BlueprintCallable, Category= "Health Shard")
+	UFUNCTION(BlueprintCallable, Category = "Health Shard")
 	float GetHealthAmount();
 	UPROPERTY(BlueprintAssignable, Category = "Health Shard")
 	FOnShardUse OnShardUse;
+
 protected:
 	UFUNCTION()
-	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit );
+	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION()
-	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) ;
+	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 private:
-	UPROPERTY(EditDefaultsOnly, Category="Health Shard | Attributes")
+	UPROPERTY(EditDefaultsOnly, Category = "Health Shard | Attributes")
 	float HealthAmount = 10.f;
 };

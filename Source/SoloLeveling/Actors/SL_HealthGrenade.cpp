@@ -7,7 +7,7 @@
 // Sets default values
 ASL_HealthGrenade::ASL_HealthGrenade()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
@@ -20,15 +20,14 @@ ASL_HealthGrenade::ASL_HealthGrenade()
 void ASL_HealthGrenade::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ASL_HealthGrenade::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if(OtherActor)
+	if (OtherActor)
 	{
-		//DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 20.f, 12, FColor::Magenta,false, 2.f);
+		// DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 20.f, 12, FColor::Magenta,false, 2.f);
 		GetWorldTimerManager().SetTimer(ActivationHandle, this, &ASL_HealthGrenade::ActivateGrenade, ActivationDelay, false);
 	}
 }
@@ -37,7 +36,6 @@ void ASL_HealthGrenade::OnComponentHit(UPrimitiveComponent* HitComponent, AActor
 void ASL_HealthGrenade::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ASL_HealthGrenade::UseGrenage(FVector Direction)
@@ -50,40 +48,36 @@ void ASL_HealthGrenade::UseGrenage(FVector Direction)
 
 void ASL_HealthGrenade::ActivateGrenade()
 {
-	FVector Origin = GetActorLocation();
+	FVector					Origin = GetActorLocation();
 	ASoloLevelingCharacter* Character = Cast<ASoloLevelingCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	UActorPool* ActorPoolRef = Character->FindComponentByClass<UActorPool>();
+	UActorPool*				ActorPoolRef = Character->FindComponentByClass<UActorPool>();
 	if (ActorPoolRef == nullptr)
 	{
-		
+
 		return;
 	}
-	for(int32 i = 0; i<NumOfShards; ++i)
+	for (int32 i = 0; i < NumOfShards; ++i)
 	{
-		
-		ASL_HealthShard* SpawnedShard = Cast<ASL_HealthShard>
-			(
-			ActorPoolRef->SpawnActorFromPool(FTransform(FRotator::ZeroRotator, Origin, FVector(0.1f,0.1f, 0.1f)))
-			);
+
+		ASL_HealthShard* SpawnedShard = Cast<ASL_HealthShard>(
+			ActorPoolRef->SpawnActorFromPool(FTransform(FRotator::ZeroRotator, Origin, FVector(0.1f, 0.1f, 0.1f))));
 		SpawnedShard->OnShardUse.Broadcast();
-		if(SpawnedShard)
+		if (SpawnedShard)
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("shard is spawned "));
+			// UE_LOG(LogTemp, Warning, TEXT("shard is spawned "));
 
 			float RandomHealth = FMath::RandRange(MinHealth, MaxHealth);
 			float RandomSpeed = FMath::RandRange(MinSpeed, MaxSpeed);
 			SpawnedShard->SetHealthAmount(RandomHealth);
 			SpawnedShard->SetVelocity(RandomSpeed);
-			//any direction within unit Sphere
+			// any direction within unit Sphere
 			FVector RandomDirection = FMath::VRand();
-			//only positive Z Axis
+			// only positive Z Axis
 			RandomDirection.Z = FMath::Abs(RandomDirection.Z);
-			FVector Impulse = RandomDirection*RandomSpeed;
+			FVector Impulse = RandomDirection * RandomSpeed;
 			SpawnedShard->Mesh->AddImpulse(Impulse, NAME_None, true);
-			//DrawDebugLine(GetWorld(), Origin, Origin + Impulse, FColor::Green, false, 2.0f, 0, 1.0f);
-
+			// DrawDebugLine(GetWorld(), Origin, Origin + Impulse, FColor::Green, false, 2.0f, 0, 1.0f);
 		}
 	}
 	Destroy();
 }
-

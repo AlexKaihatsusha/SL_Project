@@ -7,7 +7,6 @@ ASL_Shard::ASL_Shard()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
 	Mesh->SetSimulatePhysics(false);
-
 }
 
 float ASL_Shard::GeVelocity()

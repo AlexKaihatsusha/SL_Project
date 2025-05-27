@@ -1,45 +1,42 @@
 #include "GameFramework/Actor.h"
 #include "../Base/GameEventBehaviour.h"
 
-
 DEFINE_LOG_CATEGORY(UGameEventBehaviourLog)
 
 UGameEventBehaviour::UGameEventBehaviour()
 {
-	//no need to tick, since we already have our own OnUpdate which called from EventHandler
+	// no need to tick, since we already have our own OnUpdate which called from EventHandler
 	bTickEnabled = false;
 }
 
 UWorld* UGameEventBehaviour::GetWorld() const
 {
-	//I added a simple return right away. Fixed warning that can't find worldContext of Event
+	// I added a simple return right away. Fixed warning that can't find worldContext of Event
 	if (WorldRef)
 	{
 		return WorldRef;
 	}
-	//Return null if the called from the CDO, or if the outer is being destroyed: 
-	// https://forums.unrealengine.com/t/access-to-uworld-or-aactor-specific-bp-nodes-from-blueprints-of-other-types-component-object/151379
+	// Return null if the called from the CDO, or if the outer is being destroyed:
+	//  https://forums.unrealengine.com/t/access-to-uworld-or-aactor-specific-bp-nodes-from-blueprints-of-other-types-component-object/151379
 	if (!HasAnyFlags(RF_ClassDefaultObject) && !GetOuter()->HasAnyFlags(RF_BeginDestroyed) && !GetOuter()->IsUnreachable())
 	{
-		//Try to get the world from the owning actor if we have one
+		// Try to get the world from the owning actor if we have one
 		AActor* Outer = GetTypedOuter<AActor>();
 		if (Outer != nullptr)
 		{
 			return Outer->GetWorld();
 		}
 	}
-	//Else return null - the latent action will fail to initialize
+	// Else return null - the latent action will fail to initialize
 	return nullptr;
 }
 
-
 void UGameEventBehaviour::Init(UWorld* InWorld)
 {
-	if(InWorld)
+	if (InWorld)
 	{
 		WorldRef = InWorld;
 		UE_LOG(UGameEventBehaviourLog, Log, TEXT("Init World Success. Event: %s"), *GetName())
-
 	}
 	else
 	{
@@ -49,7 +46,7 @@ void UGameEventBehaviour::Init(UWorld* InWorld)
 
 void UGameEventBehaviour::Tick(float DeltaTime)
 {
-	//we do not execute the tick, since we just use its own onUpdate, which called from EventHandler
+	// we do not execute the tick, since we just use its own onUpdate, which called from EventHandler
 }
 
 TStatId UGameEventBehaviour::GetStatId() const
