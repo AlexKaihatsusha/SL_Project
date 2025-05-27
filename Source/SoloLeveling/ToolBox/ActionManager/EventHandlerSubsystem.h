@@ -31,8 +31,6 @@ public:
 	// To push through Blueprint, since only GameEventBehaviour can be blueprintable and used there
 	UFUNCTION(BlueprintCallable, Category = "Event Handler")
 	void PushEventByClass(TSubclassOf<UGameEvent> EventClass);
-	UFUNCTION(BlueprintCallable, Category = "Event Handler")
-	void PushParallelEventByClass(TSubclassOf<UGameEvent> EventClass);
 
 private:
 	void PushEvent(const TScriptInterface<IEvent>& evt);

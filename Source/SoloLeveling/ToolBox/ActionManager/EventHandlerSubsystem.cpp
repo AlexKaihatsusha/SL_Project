@@ -89,40 +89,7 @@ void UEventHandlerSubsystem::PushEventByClass(TSubclassOf<UGameEvent> EventClass
 	}
 }
 
-void UEventHandlerSubsystem::PushParallelEventByClass(TSubclassOf<UGameEvent> EventClass)
-{
-	if (!GetWorld())
-		return;
-	if (EventClass)
-	{
-		UE_LOG(UEventHandlerLog, Log, TEXT("PushParallelEventByClass call for class %s"), *EventClass->GetName());
-		UGameEvent* NewEvent = NewObject<UGameEvent>(this, EventClass);
 
-		if (NewEvent && !NewEvent->bIsMainEvent)
-		{
-			UE_LOG(UEventHandlerLog, Log, TEXT("new parallel event as new object is created"));
-			// init world ref for event
-			NewEvent->Init(GetWorld());
-
-			// wrap interface and GameEventBehaviour Object
-			TScriptInterface<IEvent> event;
-			event.SetObject(NewEvent);
-			event.SetInterface(Cast<IEvent>(NewEvent));
-			UE_LOG(UEventHandlerLog, Log, TEXT("Created a wrapper for new parallel event"));
-			// push event to the class
-			PushParallelEvent(event);
-			UE_LOG(UEventHandlerLog, Log, TEXT("PushParallelEvent called"));
-		}
-		else
-		{
-			UE_LOG(UEventHandlerLog, Error, TEXT("Failed to create event of class"));
-		}
-	}
-	else
-	{
-		UE_LOG(UEventHandlerLog, Error, TEXT("PushParallelEventByClass failed"));
-	}
-}
 
 void UEventHandlerSubsystem::PushEvent(const TScriptInterface<IEvent>& evt)
 {
