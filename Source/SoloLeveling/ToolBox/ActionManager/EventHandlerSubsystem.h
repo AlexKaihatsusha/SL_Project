@@ -12,21 +12,22 @@
 DECLARE_LOG_CATEGORY_EXTERN(UEventHandlerLog, Log, All)
 
 UCLASS()
-class  UEventHandlerSubsystem : public UGameInstanceSubsystem, public FTickableGameObject
+class  UEventHandlerSubsystem : public UTickableWorldSubsystem
 {
 	GENERATED_BODY()
 //base
 public:
 	UEventHandlerSubsystem();
 
-	void Tick(float DeltaTime) override;
 
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
-	//required functions implementation for FTickableGameObject
-	bool IsTickable() const override;
-	bool IsTickableInEditor() const override;
-	bool IsTickableWhenPaused() const override;
-	TStatId GetStatId() const override;
+	virtual void Tick(float DeltaTime) override;
+
+	virtual TStatId GetStatId() const override
+	{
+		return GetStatID();
+	}
 	//---------------------------------------------------------
 	
 

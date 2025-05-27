@@ -26,6 +26,11 @@ UEventHandlerSubsystem::UEventHandlerSubsystem()
 	UE_LOG(UEventHandlerLog, Log, TEXT("Event Handler is started"))
 	UE_LOG(UEventHandlerLog, Log, TEXT("Event Handler is running"))
 }
+void UEventHandlerSubsystem::Initialize(FSubsystemCollectionBase& Collection) {
+	Super::Initialize(Collection);
+
+}
+
 void UEventHandlerSubsystem::Tick(float DeltaTime)
 {
 	//UE_LOG(UEventHandlerLog, Log, TEXT("Event Handler is running"))
@@ -43,23 +48,6 @@ void UEventHandlerSubsystem::Deinitialize()
 	UE_LOG(UEventHandlerLog, Log, TEXT("UEventHandler::Deinitialize()"));
 
 }
-bool UEventHandlerSubsystem::IsTickable() const
-{
-	return true;
-}
-bool UEventHandlerSubsystem::IsTickableInEditor() const
-{
-	return false;
-}
-bool UEventHandlerSubsystem::IsTickableWhenPaused() const
-{
-	return false;
-}
-TStatId UEventHandlerSubsystem::GetStatId() const
-{
-	RETURN_QUICK_DECLARE_CYCLE_STAT(UEventHandlerSubsystem, STATGROUP_Tickables);
-}
-
 
 void UEventHandlerSubsystem::PushEventByClass(TSubclassOf<UGameEvent> EventClass)
 {
