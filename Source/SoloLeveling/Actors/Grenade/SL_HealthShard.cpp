@@ -1,6 +1,6 @@
 ﻿
 #include "SL_HealthShard.h"
-#include "../ToolBox/DamageSystem/Damageable.h"
+#include "SoloLeveling/ToolBox/DamageSystem/Damageable.h"
 DEFINE_LOG_CATEGORY(SL_HealthShard)
 ASL_HealthShard::ASL_HealthShard()
 	: Super::ASL_Shard()

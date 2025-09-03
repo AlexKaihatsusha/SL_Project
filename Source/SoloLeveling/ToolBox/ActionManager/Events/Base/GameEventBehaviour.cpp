@@ -1,5 +1,5 @@
-#include "GameFramework/Actor.h"
 #include "../Base/GameEventBehaviour.h"
+#include "GameFramework/Actor.h"
 
 DEFINE_LOG_CATEGORY(UGameEventBehaviourLog)
 

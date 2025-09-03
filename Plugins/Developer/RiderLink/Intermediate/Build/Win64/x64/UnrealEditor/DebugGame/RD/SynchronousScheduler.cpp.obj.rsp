@@ -1,14 +1,15 @@
-"D:\VersionControl\GitHub\SL_Project\Plugins\Developer\RiderLink\Source\RD\src\rd_framework_cpp\src\main\scheduler\SynchronousScheduler.cpp"
-/FI"D:\VersionControl\GitHub\SL_Project\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\RD\Definitions.h"
-/Fo"D:\VersionControl\GitHub\SL_Project\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\RD\SynchronousScheduler.cpp.obj"
-/experimental:log "D:\VersionControl\GitHub\SL_Project\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\RD\SynchronousScheduler.cpp.sarif"
-/sourceDependencies "D:\VersionControl\GitHub\SL_Project\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\RD\SynchronousScheduler.cpp.dep.json"
-@"D:\VersionControl\GitHub\SL_Project\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\RD\RD.Shared.rsp"
+"D:/VersionControl/GitHub/SL_Project/Plugins/Developer/RiderLink/Source/RD/src/rd_framework_cpp/src/main/scheduler/SynchronousScheduler.cpp"
+@"D:/VersionControl/GitHub/SL_Project/Plugins/Developer/RiderLink/Intermediate/Build/Win64/x64/UnrealEditor/DebugGame/RD/RD.Shared.rsp"
+/FI"D:/VersionControl/GitHub/SL_Project/Plugins/Developer/RiderLink/Intermediate/Build/Win64/x64/UnrealEditor/DebugGame/RD/Definitions.h"
+/Fo"D:/VersionControl/GitHub/SL_Project/Plugins/Developer/RiderLink/Intermediate/Build/Win64/x64/UnrealEditor/DebugGame/RD/SynchronousScheduler.cpp.obj"
+/experimental:log "D:/VersionControl/GitHub/SL_Project/Plugins/Developer/RiderLink/Intermediate/Build/Win64/x64/UnrealEditor/DebugGame/RD/SynchronousScheduler.cpp.sarif"
+/sourceDependencies "D:/VersionControl/GitHub/SL_Project/Plugins/Developer/RiderLink/Intermediate/Build/Win64/x64/UnrealEditor/DebugGame/RD/SynchronousScheduler.cpp.dep.json"
 /d2ssa-cfg-question-
 /Zc:inline
 /nologo
 /Oi
 /FC
+/diagnostics:caret
 /c
 /Gw
 /Gy
@@ -33,13 +34,12 @@
 /bigobj
 /fp:fast
 /Zp8
+/W4
 /wd4456
 /wd4458
 /wd4459
-/we4668
 /wd4244
 /wd4838
 /TP
 /GR
-/W4
 /std:c++17

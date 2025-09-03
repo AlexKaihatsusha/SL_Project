@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../ToolBox/ObjectPoolPattern/PooledActor.h"
+#include "SoloLeveling/ToolBox/ObjectPoolPattern/PooledActor.h"
 #include "SL_Shard.generated.h"
 
 UCLASS(Abstract)

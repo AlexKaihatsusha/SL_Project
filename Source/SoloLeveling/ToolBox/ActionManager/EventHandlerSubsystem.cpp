@@ -3,7 +3,7 @@
 #include "../ActionManager/EventHandlerSubsystem.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
-#include "../../../../../../../GameEngines/UnrealEngine/UE_5.5/Engine/Plugins/Editor/WaveformEditor/Source/WaveformEditorWidgets/Public/WaveformEditorStyle.h"
+//#include "../WaveformEditorWidgets/Public/WaveformEditorStyle.h"
 
 DEFINE_LOG_CATEGORY(UEventHandlerLog)
 

@@ -1,9 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-#include "../Actors/SL_HealthGrenade.h"
-#include "../Actors/SL_HealthShard.h"
+#include "SoloLeveling/Actors/Grenade/SL_HealthGrenade.h"
+#include "SoloLeveling/Actors/Grenade/SL_HealthShard.h"
 #include "Kismet/GameplayStatics.h"
-#include "../ToolBox/ObjectPoolPattern/ActorPool.h"
-#include "../SoloLevelingCharacter.h"
+#include "SoloLeveling/ToolBox/ObjectPoolPattern/PooledActor.h"
+#include "SoloLeveling/SoloLevelingCharacter.h"
+#include <SoloLeveling/ToolBox/ObjectPoolPattern/ActorPool.h>
 // Sets default values
 ASL_HealthGrenade::ASL_HealthGrenade()
 {
